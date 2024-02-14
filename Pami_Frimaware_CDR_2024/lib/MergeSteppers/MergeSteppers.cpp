@@ -44,7 +44,7 @@ bool MergeSteppers::target_reached() {
     return (tmp.left_distance == 0 && tmp.right_distance == 0);
 }
 
-void MergeSteppers::move_line(int distance) {
+void MergeSteppers::move_line(long distance) {
     left.move(distance);
     right.move(-distance);
 }

@@ -5,3 +5,7 @@
 #define STEP2 36
 #define DIR2 35
 #define EN_DRIVER2 8
+
+// Pins pour servos
+#define SERVO1 4
+#define SERVO2 5

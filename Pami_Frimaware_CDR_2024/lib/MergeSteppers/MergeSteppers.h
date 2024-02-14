@@ -30,7 +30,7 @@ class MergeSteppers {
         void set_speed(float speed);
         void set_max_acceleration(float acceleration);
         bool target_reached();
-        void move_line(int distance);
+        void move_line(long distance);
         void move_arc(int side, int angle, int radius);
         void turn(int angle);
         void stop();
