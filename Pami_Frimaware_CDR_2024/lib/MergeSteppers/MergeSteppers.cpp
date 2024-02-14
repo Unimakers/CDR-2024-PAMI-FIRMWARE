@@ -29,6 +29,15 @@ void MergeSteppers::set_max_acceleration(float acceleration) {
     right.setAcceleration(acceleration);
 }
 
+StepperDistance MergeSteppers::distance_to_go() {
+    StepperDistance tmp;
+
+    tmp.left_distance = left.distanceToGo();
+    tmp.right_distance = right.distanceToGo();
+
+    return tmp;
+} 
+
 bool MergeSteppers::target_reached() {
     StepperDistance tmp = distance_to_go();
 
