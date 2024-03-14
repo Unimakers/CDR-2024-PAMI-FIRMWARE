@@ -1,8 +1,9 @@
 #pragma once
 #include <AccelStepper.h>
 
-#define RAYON 80
-#define STEPPERMM 1
+#define RAYON 52
+#define HALF_RAYON (RAYON / 2)
+#define STEP_PER_MM 1 // à calibrer ! faire un déplacement de 1000 pas et mesurer la distance parcourue en mm
 
 typedef enum {
     left_arc = 0,
