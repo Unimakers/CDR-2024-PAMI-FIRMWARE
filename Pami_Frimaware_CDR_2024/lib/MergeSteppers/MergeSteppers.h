@@ -19,12 +19,11 @@ class MergeSteppers {
         StepperDistance leftover_distance;
         AccelStepper &left, &right;
         StepperDistance distance_to_go();
-        const int en1_pin = 0;
-        const int en2_pin = 0;
+        const int en1_pin;
+        const int en2_pin;
         bool pending_stop = false;
 
     public:
-        MergeSteppers(AccelStepper &L, AccelStepper &R);
         MergeSteppers(AccelStepper &L, AccelStepper &R, int enable_pin1, int enable_pin2);
         ~MergeSteppers();
         void set_speed(float speed);
