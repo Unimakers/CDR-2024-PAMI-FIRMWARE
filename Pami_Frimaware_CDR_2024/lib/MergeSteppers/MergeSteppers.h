@@ -3,7 +3,7 @@
 
 #define RAYON 52
 #define HALF_RAYON (RAYON / 2)
-#define STEP_PER_MM 1 // à calibrer ! faire un déplacement de 1000 pas et mesurer la distance parcourue en mm
+#define STEP_PER_MM 1 // à calibrer!
 
 typedef enum {
     left_arc = 0,
