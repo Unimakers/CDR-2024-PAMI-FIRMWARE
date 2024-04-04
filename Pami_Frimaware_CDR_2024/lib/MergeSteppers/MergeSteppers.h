@@ -35,11 +35,11 @@ class MergeSteppers {
 		void set_current_coords(int x, int y, float o);
         bool target_reached();
         void move_line(long distance);
-		bool goto_absolute(int x, int y);
+		void goto_absolute(int x, int y);
 		void move_to(long pos);
         void move_arc(int side, float radius, int angle);
         void turn(int angle);
-		void turn_absolute(int x, int y, bool calculate);
+		void turn_absolute(int x, int y);
         void stop();
         bool get_pending_stop();
         void resume();

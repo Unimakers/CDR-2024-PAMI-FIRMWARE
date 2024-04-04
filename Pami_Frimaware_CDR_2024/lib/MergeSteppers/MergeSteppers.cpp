@@ -50,22 +50,11 @@ void MergeSteppers::move_line(long distance) {
     right.move(-distance);
 }
 
-bool MergeSteppers::goto_absolute(int x, int y) {
-	static bool hasOnce = false;
-	x = x - currentCoords.x;
-	y = y - currentCoords.y;
+void MergeSteppers::goto_absolute(int x, int y) {
+	int dx = x - currentCoords.x;
+	int dy = y - currentCoords.y;
 
-	if (!hasOnce) {
-		turn_absolute(x, y, false);
-		hasOnce = true;
-
-		return false;
-	} else {
-		move_line((long)sqrt(x * x + y * y));
-		hasOnce = false;
-
-		return true;
-	}
+	move_line((long)sqrt(dx * dx + dy * dy));
 }
 
 void MergeSteppers::move_to(long pos) {
@@ -110,13 +99,11 @@ void MergeSteppers::turn(int angle) {
     right.move(Steps_to_do);
 }
 
-void MergeSteppers::turn_absolute(int x, int y, bool calculate) {
-	if (calculate) {
-		x = x - currentCoords.x;
-		y = y - currentCoords.y;
-	}
-
-	float angle = atan2(y, x);
+void MergeSteppers::turn_absolute(int x, int y) {
+	int dx = x - currentCoords.x;
+	int dy = y - currentCoords.y;
+	float angle = atan2(dy, dx);
+	Serial.println(angle);
 
 	turn(angle - currentCoords.o);
 	currentCoords.o = angle;

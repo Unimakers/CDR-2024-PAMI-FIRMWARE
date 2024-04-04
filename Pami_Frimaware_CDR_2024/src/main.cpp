@@ -100,10 +100,18 @@ void loop() {
 	if (loopTest) {
 		//strategy(1, 2);
 		RobotSteppers.set_current_coords(75, 1275, 0);
+		RobotSteppers.turn_absolute(1000, 1600);
+
+		while (!RobotSteppers.target_reached()) {
+			RobotSteppers.run();
+		}
+
 		RobotSteppers.goto_absolute(1000, 1600);
+
+		while (!RobotSteppers.target_reached()) {
+			RobotSteppers.run();
+		}
 
 		loopTest = false;
 	}
-
-	RobotSteppers.run();
 }
