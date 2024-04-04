@@ -1,9 +1,9 @@
 #pragma once
 #include <AccelStepper.h>
 
-#define RAYON 52
+#define RAYON 47.5
 #define HALF_RAYON (RAYON / 2)
-#define STEP_PER_MM 1 // à calibrer!
+#define STEP_PER_MM 14.8
 
 typedef enum {
     left_arc = 0,
@@ -31,6 +31,7 @@ class MergeSteppers {
         void set_max_acceleration(float acceleration);
         bool target_reached();
         void move_line(long distance);
+		void move_to(long pos);
         void move_arc(int side, int angle, int radius);
         void turn(int angle);
         void stop();

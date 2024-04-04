@@ -44,12 +44,17 @@ void MergeSteppers::move_line(long distance) {
     right.move(-distance);
 }
 
+void MergeSteppers::move_to(long pos) {
+	left.moveTo(pos);
+	right.moveTo(-pos);
+}
+
 void MergeSteppers::move_arc(int side, int angle, int radius) {
     float big_arc = radius + HALF_RAYON;
     float small_arc = radius - HALF_RAYON;
 
-    float MM_do_big_arc = (PI * angle * big_arc) / 180.0;
-    float MM_do_small_arc = (PI * angle * small_arc) / 180.0;
+    float MM_do_big_arc = (M_PI * angle * big_arc) / 180.0;
+    float MM_do_small_arc = (M_PI * angle * small_arc) / 180.0;
 
     long Steps_do_big_arc = MM_do_big_arc * STEP_PER_MM;
     long Steps_do_small_arc = MM_do_small_arc * STEP_PER_MM;
@@ -70,7 +75,7 @@ void MergeSteppers::move_arc(int side, int angle, int radius) {
 }
 
 void MergeSteppers::turn(int angle) {
-    float Steps_to_do = (PI * angle * RAYON * STEP_PER_MM) / 180;
+    float Steps_to_do = (M_PI * angle * RAYON * STEP_PER_MM) / 180;
 
     left.move(Steps_to_do);
     right.move(Steps_to_do);

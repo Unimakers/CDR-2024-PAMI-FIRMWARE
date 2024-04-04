@@ -17,34 +17,85 @@ MergeSteppers RobotSteppers(stepperLeft, stepperRight, EN_DRIVER1, EN_DRIVER2);
 // Wrapper des 2 servos
 //MergeServos RobotServos(servoLeft, servoRight, SERVO1, SERVO2);
 
-bool testAlternanceLoop = true; // test mouvements
+void strategy(int zone, int jardiniere) {
+	// zone 1 = bleu
+	// zone 2 = jaune
+	switch (zone) {
+		case 1:
+			switch (jardiniere) {
+				case 1:
+					RobotSteppers.turn(90);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.move_line(5920.0); // 400 mm
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					break;
+
+				case 2:
+					RobotSteppers.move_line(4440.0); // 300 mm
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.move_arc(left_arc, 90, 25);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.move_line(11840.0);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					break;
+
+				case 3:
+					break;
+
+				default:
+					Serial.println("Erreur sélection jardinière [1, 2, 3]");
+					break;
+			}
+
+			break;
+
+		case 2:
+			break;
+
+		default:
+			Serial.println("Erreur sélection de couleur équipe [1, 2]");
+			break;
+	}
+}
 
 void setup() {
     Serial.begin(115200);
-    delay(20);
+    delay(1000);
     Serial.println("Liaison série OK");
-    RobotSteppers.set_max_acceleration(2500.0);
-    RobotSteppers.set_speed(15000.0);
+    RobotSteppers.set_max_acceleration(5000.0);
+    RobotSteppers.set_speed(10000.0);
     RobotSteppers.enable();
     //RobotSteppers.disable();
-    delay(20);
+    delay(1000);
     Serial.println("Steppers OK");
 }
 
 void loop() {
-    if (RobotSteppers.target_reached()) {
-        if (testAlternanceLoop) {
-            RobotSteppers.move_line(70000.0);
-            //RobotSteppers.turn(90);
+	static bool loopTest = true;
 
-            testAlternanceLoop = false;
-        } else {
-            //RobotSteppers.turn(-90);
-            RobotSteppers.move_line(-70000.0);
+	if (loopTest) {
+		strategy(1, 2);
 
-            testAlternanceLoop = true;
-        }
-    }
-
-    RobotSteppers.run();
+		loopTest = false;
+	}
 }
