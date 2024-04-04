@@ -24,6 +24,12 @@ void MergeSteppers::set_max_acceleration(float acceleration) {
     right.setAcceleration(acceleration);
 }
 
+void MergeSteppers::set_current_coords(int x, int y, float o) {
+	currentCoords.x = x;
+	currentCoords.y = y;
+	currentCoords.o = o;
+}
+
 StepperDistance MergeSteppers::distance_to_go() {
     StepperDistance tmp;
 
@@ -44,29 +50,52 @@ void MergeSteppers::move_line(long distance) {
     right.move(-distance);
 }
 
+bool MergeSteppers::goto_absolute(int x, int y) {
+	static bool hasOnce = false;
+	x = x - currentCoords.x;
+	y = y - currentCoords.y;
+
+	if (!hasOnce) {
+		turn_absolute(x, y, false);
+		hasOnce = true;
+
+		return false;
+	} else {
+		move_line((long)sqrt(x * x + y * y));
+		hasOnce = false;
+
+		return true;
+	}
+}
+
 void MergeSteppers::move_to(long pos) {
 	left.moveTo(pos);
 	right.moveTo(-pos);
 }
 
-void MergeSteppers::move_arc(int side, int angle, int radius) {
+void MergeSteppers::move_arc(int side, float radius, int angle) {
     float big_arc = radius + HALF_RAYON;
     float small_arc = radius - HALF_RAYON;
 
-    float MM_do_big_arc = (M_PI * angle * big_arc) / 180.0;
-    float MM_do_small_arc = (M_PI * angle * small_arc) / 180.0;
+    float MM_do_big_arc = M_PI * angle * big_arc / 180.0;
+    float MM_do_small_arc = M_PI * angle * small_arc / 180.0;
 
     long Steps_do_big_arc = MM_do_big_arc * STEP_PER_MM;
     long Steps_do_small_arc = MM_do_small_arc * STEP_PER_MM;
 
     switch (side) {
-        case left_arc:
+        case 0:
+			right.setMaxSpeed(Steps_do_small_arc * STEP_SPEED / Steps_do_big_arc);
+			right.setAcceleration(right.maxSpeed() / 2);
+
             left.move(Steps_do_big_arc);
             right.move(Steps_do_small_arc);
+
             break;
-        case right_arc:
+        case 1:
             left.move(Steps_do_small_arc);
             right.move(Steps_do_big_arc);
+
             break;
         default:
             Serial.println("Erreur ! Avez-vous spécifié un type de mouvement d'arc ?");
@@ -79,6 +108,18 @@ void MergeSteppers::turn(int angle) {
 
     left.move(Steps_to_do);
     right.move(Steps_to_do);
+}
+
+void MergeSteppers::turn_absolute(int x, int y, bool calculate) {
+	if (calculate) {
+		x = x - currentCoords.x;
+		y = y - currentCoords.y;
+	}
+
+	float angle = atan2(y, x);
+
+	turn(angle - currentCoords.o);
+	currentCoords.o = angle;
 }
 
 void MergeSteppers::stop() {

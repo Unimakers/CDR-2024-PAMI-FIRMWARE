@@ -39,17 +39,21 @@ void strategy(int zone, int jardiniere) {
 					break;
 
 				case 2:
-					RobotSteppers.move_line(4440.0); // 300 mm
+					RobotSteppers.move_line(7400.0); // 500 mm
 
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
 					}
 
-					RobotSteppers.move_arc(left_arc, 90, 25);
+					//RobotSteppers.move_arc(0, 150, 90);
+					RobotSteppers.turn(90);
 
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
 					}
+
+					//RobotSteppers.set_max_acceleration(STEP_ACCEL);
+					//RobotSteppers.set_speed(STEP_SPEED);
 
 					RobotSteppers.move_line(11840.0);
 
@@ -82,8 +86,8 @@ void setup() {
     Serial.begin(115200);
     delay(1000);
     Serial.println("Liaison série OK");
-    RobotSteppers.set_max_acceleration(5000.0);
-    RobotSteppers.set_speed(10000.0);
+    RobotSteppers.set_max_acceleration(STEP_ACCEL);
+    RobotSteppers.set_speed(STEP_SPEED);
     RobotSteppers.enable();
     //RobotSteppers.disable();
     delay(1000);
@@ -94,8 +98,12 @@ void loop() {
 	static bool loopTest = true;
 
 	if (loopTest) {
-		strategy(1, 2);
+		//strategy(1, 2);
+		RobotSteppers.set_current_coords(75, 1275, 0);
+		RobotSteppers.goto_absolute(1000, 1600);
 
 		loopTest = false;
 	}
+
+	RobotSteppers.run();
 }
