@@ -1,10 +1,10 @@
 // Pins pour drivers et steppers
-#define STEP1 7
-#define DIR1 6
-#define EN_DRIVER1 1
-#define STEP2 36
-#define DIR2 35
-#define EN_DRIVER2 8
+#define STEP1 6
+#define DIR1 7
+#define EN_DRIVER1 8
+#define STEP2 38
+#define DIR2 36
+#define EN_DRIVER2 1
 
 // Pins pour servos
 #define SERVO1 4
