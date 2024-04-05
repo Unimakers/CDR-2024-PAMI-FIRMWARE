@@ -30,54 +30,47 @@ void strategy(int zone, int jardiniere) {
 						RobotSteppers.run();
 					}
 
-					RobotSteppers.move_line(5920.0); // 400 mm
+					RobotSteppers.move_line(400 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
 					}
 
 					break;
-
 				case 2:
-					RobotSteppers.move_line(7400.0); // 500 mm
+					RobotSteppers.move_line(500 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
 					}
 
-					//RobotSteppers.move_arc(0, 150, 90);
 					RobotSteppers.turn(90);
 
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
 					}
 
-					//RobotSteppers.set_max_acceleration(STEP_ACCEL);
-					//RobotSteppers.set_speed(STEP_SPEED);
-
-					RobotSteppers.move_line(11840.0);
+					RobotSteppers.move_line(800 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
 					}
 
 					break;
-
 				case 3:
 					break;
-
 				default:
 					Serial.println("Erreur sélection jardinière [1, 2, 3]");
+
 					break;
 			}
 
 			break;
-
 		case 2:
 			break;
-
 		default:
 			Serial.println("Erreur sélection de couleur équipe [1, 2]");
+
 			break;
 	}
 }
@@ -98,19 +91,7 @@ void loop() {
 	static bool loopTest = true;
 
 	if (loopTest) {
-		//strategy(1, 2);
-		RobotSteppers.set_current_coords(75, 1275, 0);
-		RobotSteppers.turn_absolute(1000, 1600);
-
-		while (!RobotSteppers.target_reached()) {
-			RobotSteppers.run();
-		}
-
-		RobotSteppers.goto_absolute(1000, 1600);
-
-		while (!RobotSteppers.target_reached()) {
-			RobotSteppers.run();
-		}
+		strategy(1, 2);
 
 		loopTest = false;
 	}
