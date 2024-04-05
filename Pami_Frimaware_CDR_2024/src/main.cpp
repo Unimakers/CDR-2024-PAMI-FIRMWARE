@@ -1,9 +1,9 @@
-#include <Arduino.h>
-#include <PamiDef.h>
-#include <AccelStepper.h>
-#include <MergeSteppers.h>
-#include <ESP32Servo.h>
-#include <MergeServos.h>
+#include "Arduino.h"
+#include "PamiDef.h"
+#include "AccelStepper.h"
+#include "MergeSteppers.h"
+#include "ESP32Servo.h"
+#include "Ultrasonic.h"
 
 // Steppers gauche et droite
 AccelStepper stepperLeft(AccelStepper::DRIVER, STEP1, DIR1), stepperRight(AccelStepper::DRIVER, STEP2, DIR2);
@@ -14,8 +14,15 @@ MergeSteppers RobotSteppers(stepperLeft, stepperRight, EN_DRIVER1, EN_DRIVER2);
 // Servos gauche et droite
 //Servo servoLeft, servoRight;
 
-// Wrapper des 2 servos
-//MergeServos RobotServos(servoLeft, servoRight, SERVO1, SERVO2);
+// Capteur ultrason et cache valeur
+Ultrasonic sonar(TRIGGER, ECHO);
+unsigned int sonarDistanceCached;
+
+int getSonarDistance() {
+	sonarDistanceCached = sonar.read();
+
+	return sonarDistanceCached;
+}
 
 void strategy(int zone, int jardiniere) {
 	// zone 1 = bleu

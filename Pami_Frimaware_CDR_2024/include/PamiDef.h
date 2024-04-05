@@ -9,3 +9,7 @@
 // Pins pour servos
 #define SERVO1 4
 #define SERVO2 5
+
+// Pins pour ultrason
+#define TRIGGER 17
+#define ECHO 18

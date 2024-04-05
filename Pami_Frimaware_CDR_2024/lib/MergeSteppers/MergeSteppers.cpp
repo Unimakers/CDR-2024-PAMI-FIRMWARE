@@ -1,4 +1,4 @@
-#include <MergeSteppers.h>
+#include "MergeSteppers.h"
 
 MergeSteppers::MergeSteppers(AccelStepper &L, AccelStepper &R, int enable_pin1, int enable_pin2):left(L), right(R), en1_pin(enable_pin1), en2_pin(enable_pin2) {
     pinMode(en1_pin, OUTPUT);
