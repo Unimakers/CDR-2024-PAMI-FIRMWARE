@@ -24,6 +24,69 @@ void strategy(int zone, int jardiniere) {
 		case 1:
 			switch (jardiniere) {
 				case 1:
+					RobotSteppers.turn(-90);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.move_line(400 * STEP_PER_MM);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					break;
+				case 2:
+					RobotSteppers.move_line(525 * STEP_PER_MM);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.turn(-90);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.move_line(1200 * STEP_PER_MM);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					break;
+				case 3:
+					RobotSteppers.move_line(1325 * STEP_PER_MM);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.turn(-90);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.move_line(1325 * STEP_PER_MM);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					break;
+				default:
+					Serial.println("Erreur sélection jardinière [1, 2, 3]");
+
+					break;
+			}
+
+			break;
+		case 2:
+			switch (jardiniere) {
+				case 1:
 					RobotSteppers.turn(90);
 
 					while (!RobotSteppers.target_reached()) {
@@ -38,7 +101,7 @@ void strategy(int zone, int jardiniere) {
 
 					break;
 				case 2:
-					RobotSteppers.move_line(500 * STEP_PER_MM);
+					RobotSteppers.move_line(525 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
@@ -50,7 +113,7 @@ void strategy(int zone, int jardiniere) {
 						RobotSteppers.run();
 					}
 
-					RobotSteppers.move_line(800 * STEP_PER_MM);
+					RobotSteppers.move_line(1200 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
@@ -58,6 +121,24 @@ void strategy(int zone, int jardiniere) {
 
 					break;
 				case 3:
+					RobotSteppers.move_line(1325 * STEP_PER_MM);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.turn(90);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.move_line(1325 * STEP_PER_MM);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
 					break;
 				default:
 					Serial.println("Erreur sélection jardinière [1, 2, 3]");
@@ -65,8 +146,6 @@ void strategy(int zone, int jardiniere) {
 					break;
 			}
 
-			break;
-		case 2:
 			break;
 		default:
 			Serial.println("Erreur sélection de couleur équipe [1, 2]");
@@ -91,7 +170,7 @@ void loop() {
 	static bool loopTest = true;
 
 	if (loopTest) {
-		strategy(1, 2);
+		strategy(2, 2);
 
 		loopTest = false;
 	}
