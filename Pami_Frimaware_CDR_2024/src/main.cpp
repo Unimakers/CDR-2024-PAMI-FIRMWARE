@@ -15,13 +15,13 @@ MergeSteppers RobotSteppers(stepperLeft, stepperRight, EN_DRIVER1, EN_DRIVER2);
 //Servo servoLeft, servoRight;
 
 // Capteur ultrason et cache valeur
-Ultrasonic sonar(TRIGGER, ECHO);
+Ultrasonic sonar(SERVO1, SERVO2);
 unsigned int sonarDistanceCached;
 
-int getSonarDistance() {
-	sonarDistanceCached = sonar.read();
-
-	return sonarDistanceCached;
+void getSonarDistance(void *pvParameters) {
+	for (;;) {
+		sonarDistanceCached = sonar.read();
+	}
 }
 
 void strategy(int zone, int jardiniere) {
@@ -40,7 +40,11 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(400 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
+						if (sonarDistanceCached <= 20) {
+							continue;
+						} else {
+							RobotSteppers.run();
+						}
 					}
 
 					break;
@@ -48,7 +52,11 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(525 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
+						if (sonarDistanceCached <= 20) {
+							continue;
+						} else {
+							RobotSteppers.run();
+						}
 					}
 
 					RobotSteppers.turn(-90);
@@ -60,7 +68,11 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1200 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
+						if (sonarDistanceCached <= 20) {
+							continue;
+						} else {
+							RobotSteppers.run();
+						}
 					}
 
 					break;
@@ -68,7 +80,11 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1325 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
+						if (sonarDistanceCached <= 20) {
+							continue;
+						} else {
+							RobotSteppers.run();
+						}
 					}
 
 					RobotSteppers.turn(-90);
@@ -80,7 +96,11 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1325 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
+						if (sonarDistanceCached <= 20) {
+							continue;
+						} else {
+							RobotSteppers.run();
+						}
 					}
 
 					break;
@@ -103,7 +123,11 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(400 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
+						if (sonarDistanceCached <= 20) {
+							continue;
+						} else {
+							RobotSteppers.run();
+						}
 					}
 
 					break;
@@ -111,7 +135,11 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(525 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
+						if (sonarDistanceCached <= 20) {
+							continue;
+						} else {
+							RobotSteppers.run();
+						}
 					}
 
 					RobotSteppers.turn(90);
@@ -123,7 +151,11 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1200 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
+						if (sonarDistanceCached <= 20) {
+							continue;
+						} else {
+							RobotSteppers.run();
+						}
 					}
 
 					break;
@@ -131,7 +163,11 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1325 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
+						if (sonarDistanceCached <= 20) {
+							continue;
+						} else {
+							RobotSteppers.run();
+						}
 					}
 
 					RobotSteppers.turn(90);
@@ -143,7 +179,11 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1325 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
+						if (sonarDistanceCached <= 20) {
+							continue;
+						} else {
+							RobotSteppers.run();
+						}
 					}
 
 					break;
@@ -171,13 +211,16 @@ void setup() {
     //RobotSteppers.disable();
     delay(1000);
     Serial.println("Steppers OK");
+	xTaskCreatePinnedToCore(getSonarDistance, "sonarTask", 10000, NULL, 0, NULL, 0);
+	delay(1000);
+	Serial.println("Sonar Core2 OK");
 }
 
 void loop() {
 	static bool loopTest = true;
 
 	if (loopTest) {
-		strategy(2, 2);
+		strategy(1, 2);
 
 		loopTest = false;
 	}
