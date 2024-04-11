@@ -10,6 +10,7 @@ AccelStepper stepperLeft(AccelStepper::DRIVER, STEP2, DIR2), stepperRight(AccelS
 
 // Wrapper des 2 steppers
 MergeSteppers RobotSteppers(stepperLeft, stepperRight, EN_DRIVER1, EN_DRIVER2);
+bool hasStopped = false;
 
 // Servos gauche et droite
 //Servo servoLeft, servoRight;
@@ -17,10 +18,17 @@ MergeSteppers RobotSteppers(stepperLeft, stepperRight, EN_DRIVER1, EN_DRIVER2);
 // Capteur ultrason et cache valeur
 Ultrasonic sonar(SERVO1, SERVO2);
 unsigned int sonarDistanceCached;
+//unsigned char obstacleVerification = 0;
 
 void getSonarDistance(void *pvParameters) {
 	for (;;) {
 		sonarDistanceCached = sonar.read();
+
+		if (sonarDistanceCached >= 5 && sonarDistanceCached <= 20) {
+			tone(BUZZER, 500);
+			delay(50);
+			noTone(BUZZER);
+		}
 	}
 }
 
@@ -40,12 +48,15 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(400 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (sonarDistanceCached <= 20) {
+						if (sonarDistanceCached >= 2 && sonarDistanceCached <= 20 && !hasStopped) {
 							RobotSteppers.stop();
-							tone(BUZZER, 1000, 100);
-						} else {
-							RobotSteppers.run();
+							hasStopped = true;
+						} else if (hasStopped) {
+							RobotSteppers.resume();
+							hasStopped = false;
 						}
+
+						RobotSteppers.run();
 					}
 
 					break;
@@ -53,12 +64,15 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(525 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (sonarDistanceCached <= 20) {
+						if (sonarDistanceCached >= 2 && sonarDistanceCached <= 20 && !hasStopped) {
 							RobotSteppers.stop();
-							tone(BUZZER, 1000, 100);
-						} else {
-							RobotSteppers.run();
+							hasStopped = true;
+						} else if (hasStopped) {
+							RobotSteppers.resume();
+							hasStopped = false;
 						}
+
+						RobotSteppers.run();
 					}
 
 					RobotSteppers.turn(-90);
@@ -70,12 +84,15 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1200 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (sonarDistanceCached <= 20) {
+						if (sonarDistanceCached >= 2 && sonarDistanceCached <= 20 && !hasStopped) {
 							RobotSteppers.stop();
-							tone(BUZZER, 1000, 100);
-						} else {
-							RobotSteppers.run();
+							hasStopped = true;
+						} else if (hasStopped) {
+							RobotSteppers.resume();
+							hasStopped = false;
 						}
+
+						RobotSteppers.run();
 					}
 
 					break;
@@ -83,12 +100,15 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1325 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (sonarDistanceCached <= 20) {
+						if (sonarDistanceCached >= 2 && sonarDistanceCached <= 20 && !hasStopped) {
 							RobotSteppers.stop();
-							tone(BUZZER, 1000, 100);
-						} else {
-							RobotSteppers.run();
+							hasStopped = true;
+						} else if (hasStopped) {
+							RobotSteppers.resume();
+							hasStopped = false;
 						}
+
+						RobotSteppers.run();
 					}
 
 					RobotSteppers.turn(-90);
@@ -100,12 +120,15 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1325 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (sonarDistanceCached <= 20) {
+						if (sonarDistanceCached >= 2 && sonarDistanceCached <= 20 && !hasStopped) {
 							RobotSteppers.stop();
-							tone(BUZZER, 1000, 100);
-						} else {
-							RobotSteppers.run();
+							hasStopped = true;
+						} else if (hasStopped) {
+							RobotSteppers.resume();
+							hasStopped = false;
 						}
+
+						RobotSteppers.run();
 					}
 
 					break;
@@ -128,12 +151,15 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(400 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (sonarDistanceCached <= 20) {
+						if (sonarDistanceCached >= 2 && sonarDistanceCached <= 20 && !hasStopped) {
 							RobotSteppers.stop();
-							tone(BUZZER, 1000, 100);
-						} else {
-							RobotSteppers.run();
+							hasStopped = true;
+						} else if (hasStopped) {
+							RobotSteppers.resume();
+							hasStopped = false;
 						}
+
+						RobotSteppers.run();
 					}
 
 					break;
@@ -141,12 +167,15 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(525 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (sonarDistanceCached <= 20) {
+						if (sonarDistanceCached >= 2 && sonarDistanceCached <= 20 && !hasStopped) {
 							RobotSteppers.stop();
-							tone(BUZZER, 1000, 100);
-						} else {
-							RobotSteppers.run();
+							hasStopped = true;
+						} else if (hasStopped) {
+							RobotSteppers.resume();
+							hasStopped = false;
 						}
+
+						RobotSteppers.run();
 					}
 
 					RobotSteppers.turn(90);
@@ -158,12 +187,15 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1200 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (sonarDistanceCached <= 20) {
+						if (sonarDistanceCached >= 2 && sonarDistanceCached <= 20 && !hasStopped) {
 							RobotSteppers.stop();
-							tone(BUZZER, 1000, 100);
-						} else {
-							RobotSteppers.run();
+							hasStopped = true;
+						} else if (hasStopped) {
+							RobotSteppers.resume();
+							hasStopped = false;
 						}
+
+						RobotSteppers.run();
 					}
 
 					break;
@@ -171,12 +203,15 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1325 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (sonarDistanceCached <= 20) {
+						if (sonarDistanceCached >= 2 && sonarDistanceCached <= 20 && !hasStopped) {
 							RobotSteppers.stop();
-							tone(BUZZER, 1000, 100);
-						} else {
-							RobotSteppers.run();
+							hasStopped = true;
+						} else if (hasStopped) {
+							RobotSteppers.resume();
+							hasStopped = false;
 						}
+
+						RobotSteppers.run();
 					}
 
 					RobotSteppers.turn(90);
@@ -188,12 +223,15 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1325 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (sonarDistanceCached <= 20) {
+						if (sonarDistanceCached >= 2 && sonarDistanceCached <= 20 && !hasStopped) {
 							RobotSteppers.stop();
-							tone(BUZZER, 1000, 100);
-						} else {
-							RobotSteppers.run();
+							hasStopped = true;
+						} else if (hasStopped) {
+							RobotSteppers.resume();
+							hasStopped = false;
 						}
+
+						RobotSteppers.run();
 					}
 
 					break;
