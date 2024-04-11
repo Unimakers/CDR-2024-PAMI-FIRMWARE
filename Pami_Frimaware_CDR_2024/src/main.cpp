@@ -41,7 +41,8 @@ void strategy(int zone, int jardiniere) {
 
 					while (!RobotSteppers.target_reached()) {
 						if (sonarDistanceCached <= 20) {
-							continue;
+							RobotSteppers.stop();
+							tone(BUZZER, 1000, 100);
 						} else {
 							RobotSteppers.run();
 						}
@@ -53,7 +54,8 @@ void strategy(int zone, int jardiniere) {
 
 					while (!RobotSteppers.target_reached()) {
 						if (sonarDistanceCached <= 20) {
-							continue;
+							RobotSteppers.stop();
+							tone(BUZZER, 1000, 100);
 						} else {
 							RobotSteppers.run();
 						}
@@ -69,7 +71,8 @@ void strategy(int zone, int jardiniere) {
 
 					while (!RobotSteppers.target_reached()) {
 						if (sonarDistanceCached <= 20) {
-							continue;
+							RobotSteppers.stop();
+							tone(BUZZER, 1000, 100);
 						} else {
 							RobotSteppers.run();
 						}
@@ -81,7 +84,8 @@ void strategy(int zone, int jardiniere) {
 
 					while (!RobotSteppers.target_reached()) {
 						if (sonarDistanceCached <= 20) {
-							continue;
+							RobotSteppers.stop();
+							tone(BUZZER, 1000, 100);
 						} else {
 							RobotSteppers.run();
 						}
@@ -97,7 +101,8 @@ void strategy(int zone, int jardiniere) {
 
 					while (!RobotSteppers.target_reached()) {
 						if (sonarDistanceCached <= 20) {
-							continue;
+							RobotSteppers.stop();
+							tone(BUZZER, 1000, 100);
 						} else {
 							RobotSteppers.run();
 						}
@@ -124,7 +129,8 @@ void strategy(int zone, int jardiniere) {
 
 					while (!RobotSteppers.target_reached()) {
 						if (sonarDistanceCached <= 20) {
-							continue;
+							RobotSteppers.stop();
+							tone(BUZZER, 1000, 100);
 						} else {
 							RobotSteppers.run();
 						}
@@ -136,7 +142,8 @@ void strategy(int zone, int jardiniere) {
 
 					while (!RobotSteppers.target_reached()) {
 						if (sonarDistanceCached <= 20) {
-							continue;
+							RobotSteppers.stop();
+							tone(BUZZER, 1000, 100);
 						} else {
 							RobotSteppers.run();
 						}
@@ -152,7 +159,8 @@ void strategy(int zone, int jardiniere) {
 
 					while (!RobotSteppers.target_reached()) {
 						if (sonarDistanceCached <= 20) {
-							continue;
+							RobotSteppers.stop();
+							tone(BUZZER, 1000, 100);
 						} else {
 							RobotSteppers.run();
 						}
@@ -164,7 +172,8 @@ void strategy(int zone, int jardiniere) {
 
 					while (!RobotSteppers.target_reached()) {
 						if (sonarDistanceCached <= 20) {
-							continue;
+							RobotSteppers.stop();
+							tone(BUZZER, 1000, 100);
 						} else {
 							RobotSteppers.run();
 						}
@@ -180,7 +189,8 @@ void strategy(int zone, int jardiniere) {
 
 					while (!RobotSteppers.target_reached()) {
 						if (sonarDistanceCached <= 20) {
-							continue;
+							RobotSteppers.stop();
+							tone(BUZZER, 1000, 100);
 						} else {
 							RobotSteppers.run();
 						}
@@ -204,16 +214,19 @@ void strategy(int zone, int jardiniere) {
 void setup() {
     Serial.begin(115200);
     delay(1000);
-    Serial.println("Liaison série OK");
+    Serial.print("Liaison série OK");
     RobotSteppers.set_max_acceleration(STEP_ACCEL);
     RobotSteppers.set_speed(STEP_SPEED);
     RobotSteppers.enable();
     //RobotSteppers.disable();
     delay(1000);
-    Serial.println("Steppers OK");
+    Serial.print(" | Steppers OK");
 	xTaskCreatePinnedToCore(getSonarDistance, "sonarTask", 10000, NULL, 0, NULL, 0);
-	delay(1000);
-	Serial.println("Sonar Core2 OK");
+	delay(40);
+	Serial.print(" | Sonar Core2 OK");
+	pinMode(BUZZER, OUTPUT);
+	delay(40);
+	Serial.println(" | Buzzer OK");
 }
 
 void loop() {

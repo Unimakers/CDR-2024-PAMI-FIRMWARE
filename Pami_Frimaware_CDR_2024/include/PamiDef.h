@@ -13,3 +13,6 @@
 // Pins pour ultrason
 #define TRIGGER 17
 #define ECHO 18
+
+// Pin buzzer
+#define BUZZER 12
