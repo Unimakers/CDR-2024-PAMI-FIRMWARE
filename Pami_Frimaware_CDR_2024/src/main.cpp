@@ -6,7 +6,7 @@
 #include "Ultrasonic.h"
 
 // Steppers gauche et droite
-AccelStepper stepperLeft(AccelStepper::DRIVER, STEP1, DIR1), stepperRight(AccelStepper::DRIVER, STEP2, DIR2);
+AccelStepper stepperLeft(AccelStepper::DRIVER, STEP2, DIR2), stepperRight(AccelStepper::DRIVER, STEP1, DIR1);
 
 // Wrapper des 2 steppers
 MergeSteppers RobotSteppers(stepperLeft, stepperRight, EN_DRIVER1, EN_DRIVER2);
