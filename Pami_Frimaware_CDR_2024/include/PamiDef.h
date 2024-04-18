@@ -13,6 +13,9 @@
 // Pins pour ultrason
 #define TRIGGER 17
 #define ECHO 18
+#define SONAR_MAX_DISTANCE 200
+#define SONAR_PING_INTERVAL 33
+#define SONAR_ITERATIONS 3
 
 // Pin buzzer
 #define BUZZER 12
