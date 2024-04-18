@@ -15,7 +15,10 @@
 #define ECHO 18
 #define SONAR_MAX_DISTANCE 200
 #define SONAR_PING_INTERVAL 33
-#define SONAR_ITERATIONS 3
+#define SONAR_ITERATIONS 5
 
-// Pin buzzer
+// Pin pour buzzer
 #define BUZZER 12
+
+// Pin pour tirette
+#define TIRETTE 3

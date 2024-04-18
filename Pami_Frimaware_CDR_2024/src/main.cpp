@@ -76,15 +76,9 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(400 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (obstacle) {
-							RobotSteppers.stop();
-
-							while (RobotSteppers.get_pending_stop()) {
-								RobotSteppers.run();
-							}
+						if (!obstacle) {
+							RobotSteppers.run();
 						}
-
-						RobotSteppers.run();
 					}
 
 					break;
@@ -92,15 +86,9 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(525 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (obstacle) {
-							RobotSteppers.stop();
-
-							while (RobotSteppers.get_pending_stop()) {
-								RobotSteppers.run();
-							}
+						if (!obstacle) {
+							RobotSteppers.run();
 						}
-
-						RobotSteppers.run();
 					}
 
 					RobotSteppers.turn(-90);
@@ -112,15 +100,9 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1200 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (obstacle) {
-							RobotSteppers.stop();
-
-							while (RobotSteppers.get_pending_stop()) {
-								RobotSteppers.run();
-							}
+						if (!obstacle) {
+							RobotSteppers.run();
 						}
-
-						RobotSteppers.run();
 					}
 
 					break;
@@ -128,15 +110,9 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1325 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (obstacle) {
-							RobotSteppers.stop();
-
-							while (RobotSteppers.get_pending_stop()) {
-								RobotSteppers.run();
-							}
+						if (!obstacle) {
+							RobotSteppers.run();
 						}
-
-						RobotSteppers.run();
 					}
 
 					RobotSteppers.turn(-90);
@@ -148,15 +124,9 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1325 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (obstacle) {
-							RobotSteppers.stop();
-
-							while (RobotSteppers.get_pending_stop()) {
-								RobotSteppers.run();
-							}
+						if (!obstacle) {
+							RobotSteppers.run();
 						}
-
-						RobotSteppers.run();
 					}
 
 					break;
@@ -179,15 +149,9 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(400 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (obstacle) {
-							RobotSteppers.stop();
-
-							while (RobotSteppers.get_pending_stop()) {
-								RobotSteppers.run();
-							}
+						if (!obstacle) {
+							RobotSteppers.run();
 						}
-
-						RobotSteppers.run();
 					}
 
 					break;
@@ -195,15 +159,9 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(525 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (obstacle) {
-							RobotSteppers.stop();
-
-							while (RobotSteppers.get_pending_stop()) {
-								RobotSteppers.run();
-							}
+						if (!obstacle) {
+							RobotSteppers.run();
 						}
-
-						RobotSteppers.run();
 					}
 
 					RobotSteppers.turn(90);
@@ -215,15 +173,9 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1200 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (obstacle) {
-							RobotSteppers.stop();
-
-							while (RobotSteppers.get_pending_stop()) {
-								RobotSteppers.run();
-							}
+						if (!obstacle) {
+							RobotSteppers.run();
 						}
-
-						RobotSteppers.run();
 					}
 
 					break;
@@ -231,15 +183,9 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1325 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (obstacle) {
-							RobotSteppers.stop();
-
-							while (RobotSteppers.get_pending_stop()) {
-								RobotSteppers.run();
-							}
+						if (!obstacle) {
+							RobotSteppers.run();
 						}
-
-						RobotSteppers.run();
 					}
 
 					RobotSteppers.turn(90);
@@ -251,15 +197,9 @@ void strategy(int zone, int jardiniere) {
 					RobotSteppers.move_line(1325 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
-						if (obstacle) {
-							RobotSteppers.stop();
-
-							while (RobotSteppers.get_pending_stop()) {
-								RobotSteppers.run();
-							}
+						if (!obstacle) {
+							RobotSteppers.run();
 						}
-
-						RobotSteppers.run();
 					}
 
 					break;
@@ -279,24 +219,29 @@ void strategy(int zone, int jardiniere) {
 
 void setup() {
     Serial.begin(115200);
-    delay(1000);
+    delay(250);
     DEBUG_PRINT("Liaison série OK");
+	pinMode(TIRETTE, INPUT_PULLUP);
+	delay(250);
+	DEBUG_PRINT(" | Tirette OK");
     RobotSteppers.set_max_acceleration(STEP_ACCEL);
     RobotSteppers.set_speed(STEP_SPEED);
     RobotSteppers.enable();
     //RobotSteppers.disable();
-    delay(1000);
+    delay(250);
     DEBUG_PRINT(" | Steppers OK");
 	xTaskCreatePinnedToCore(pollSonarDistance, "sonarTask", 10000, NULL, 0, NULL, 0);
-	delay(40);
+	delay(250);
 	DEBUG_PRINT(" | Sonar Core2 OK");
 	pinMode(BUZZER, OUTPUT);
-	delay(40);
+	delay(250);
 	DEBUG_PRINTLN(" | Buzzer OK");
 }
 
 void loop() {
 	static bool loopTest = true;
+
+	while (!digitalRead(TIRETTE));
 
 	if (loopTest) {
 		strategy(1, 2);
