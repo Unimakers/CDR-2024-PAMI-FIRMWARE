@@ -4,7 +4,15 @@
 #include "MergeSteppers.h"
 #include "ESP32Servo.h"
 #include "Ultrasonic.h"
-//#include "NewPing.h"
+
+#define DEBUG // à commenter en prod
+#ifdef DEBUG
+	#define DEBUG_PRINTLN(x) Serial.println(x)
+	#define DEBUG_PRINT(x) Serial.print(x)
+#else
+	#define DEBUG_PRINTLN(x)
+	#define DEBUG_PRINT(x)
+#endif
 
 // Steppers gauche et droite
 AccelStepper stepperLeft(AccelStepper::DRIVER, STEP2, DIR2), stepperRight(AccelStepper::DRIVER, STEP1, DIR1);
@@ -24,31 +32,31 @@ void pollSonarDistance(void *pvParameters) {
 	int readings[SONAR_ITERATIONS], sonar_index = 0, total = 0;
 
 	for (;;) {
-	unsigned long currentMillis = millis();
+		unsigned long currentMillis = millis();
 
-	if (currentMillis - previousMillis >= SONAR_PING_INTERVAL) {
-		previousMillis = currentMillis;
+		if (currentMillis - previousMillis >= SONAR_PING_INTERVAL) {
+			previousMillis = currentMillis;
 
-		total -= readings[sonar_index];
-		readings[sonar_index] = sonar.read();
-		total += readings[sonar_index];
+			total -= readings[sonar_index];
+			readings[sonar_index] = sonar.read();
+			total += readings[sonar_index];
 
-		sonar_index = (sonar_index + 1) % SONAR_ITERATIONS;
+			sonar_index = (sonar_index + 1) % SONAR_ITERATIONS;
 
-		int average = total / SONAR_ITERATIONS;
+			int average = total / SONAR_ITERATIONS;
 
-		if (average <= 20) {
-			obstacle = true;
+			if (average <= 20) {
+				obstacle = true;
 
-			tone(BUZZER, 440);
-			delay(SONAR_PING_INTERVAL);
-			noTone(BUZZER);
-		} else {
-			obstacle = false;
+				tone(BUZZER, 440);
+				delay(SONAR_PING_INTERVAL);
+				noTone(BUZZER);
+			} else {
+				obstacle = false;
+			}
+
+			DEBUG_PRINTLN(average);
 		}
-
-		Serial.println(average);
-	}
 	}
 }
 
@@ -153,7 +161,7 @@ void strategy(int zone, int jardiniere) {
 
 					break;
 				default:
-					Serial.println("Erreur sélection jardinière [1, 2, 3]");
+					DEBUG_PRINTLN("Erreur sélection jardinière [1, 2, 3]");
 
 					break;
 			}
@@ -256,14 +264,14 @@ void strategy(int zone, int jardiniere) {
 
 					break;
 				default:
-					Serial.println("Erreur sélection jardinière [1, 2, 3]");
+					DEBUG_PRINTLN("Erreur sélection jardinière [1, 2, 3]");
 
 					break;
 			}
 
 			break;
 		default:
-			Serial.println("Erreur sélection de couleur équipe [1, 2]");
+			DEBUG_PRINTLN("Erreur sélection de couleur équipe [1, 2]");
 
 			break;
 	}
@@ -272,19 +280,19 @@ void strategy(int zone, int jardiniere) {
 void setup() {
     Serial.begin(115200);
     delay(1000);
-    Serial.print("Liaison série OK");
+    DEBUG_PRINT("Liaison série OK");
     RobotSteppers.set_max_acceleration(STEP_ACCEL);
     RobotSteppers.set_speed(STEP_SPEED);
     RobotSteppers.enable();
     //RobotSteppers.disable();
     delay(1000);
-    Serial.print(" | Steppers OK");
+    DEBUG_PRINT(" | Steppers OK");
 	xTaskCreatePinnedToCore(pollSonarDistance, "sonarTask", 10000, NULL, 0, NULL, 0);
 	delay(40);
-	Serial.print(" | Sonar Core2 OK");
+	DEBUG_PRINT(" | Sonar Core2 OK");
 	pinMode(BUZZER, OUTPUT);
 	delay(40);
-	Serial.println(" | Buzzer OK");
+	DEBUG_PRINTLN(" | Buzzer OK");
 }
 
 void loop() {
