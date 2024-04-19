@@ -29,7 +29,7 @@ bool obstacle = false;
 
 void pollSonarDistance(void *pvParameters) {
 	unsigned long previousMillis = 0;
-	int readings[SONAR_ITERATIONS], sonar_index = 0, total = 0;
+	int readings[SONAR_ITERATIONS], sonar_index = 0, total = 0, average;
 
 	for (;;) {
 		unsigned long currentMillis = millis();
@@ -43,7 +43,7 @@ void pollSonarDistance(void *pvParameters) {
 
 			sonar_index = (sonar_index + 1) % SONAR_ITERATIONS;
 
-			int average = total / SONAR_ITERATIONS;
+			average = total / SONAR_ITERATIONS;
 
 			if (average <= 20) {
 				obstacle = true;
