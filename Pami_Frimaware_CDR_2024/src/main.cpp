@@ -247,12 +247,13 @@ void setup() {
 	pinMode(BUZZER, OUTPUT);
 	delay(250);
 	DEBUG_PRINTLN(" | Buzzer OK");
-
 	waitingTirette();
 }
 
 void loop() {
 	static bool loopTest = true;
+
+	//delay(90000); // début après 90s match
 
 	if (loopTest) {
 		strategy(1, 2);
