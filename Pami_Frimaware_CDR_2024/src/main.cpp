@@ -217,6 +217,11 @@ void strategy(int zone, int jardiniere) {
 	}
 }
 
+void waitingTirette() {
+	while (digitalRead(TIRETTE));
+	while (!digitalRead(TIRETTE));
+}
+
 void setup() {
     Serial.begin(115200);
     delay(250);
@@ -241,7 +246,7 @@ void setup() {
 void loop() {
 	static bool loopTest = true;
 
-	while (!digitalRead(TIRETTE));
+	waitingTirette();
 
 	if (loopTest) {
 		strategy(1, 2);

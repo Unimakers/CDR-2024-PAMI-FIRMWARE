@@ -15,7 +15,7 @@
 #define ECHO 18
 #define SONAR_MAX_DISTANCE 200
 #define SONAR_PING_INTERVAL 33
-#define SONAR_ITERATIONS 5
+#define SONAR_ITERATIONS 4
 
 // Pin pour buzzer
 #define BUZZER 12
