@@ -219,7 +219,13 @@ void strategy(int zone, int jardiniere) {
 
 void waitingTirette() {
 	while (digitalRead(TIRETTE));
+	tone(BUZZER, 261);
+	delay(200);
+	noTone(BUZZER);
 	while (!digitalRead(TIRETTE));
+	tone(BUZZER, 329);
+	delay(200);
+	noTone(BUZZER);
 }
 
 void setup() {
@@ -241,12 +247,12 @@ void setup() {
 	pinMode(BUZZER, OUTPUT);
 	delay(250);
 	DEBUG_PRINTLN(" | Buzzer OK");
+
+	waitingTirette();
 }
 
 void loop() {
 	static bool loopTest = true;
-
-	waitingTirette();
 
 	if (loopTest) {
 		strategy(1, 2);
