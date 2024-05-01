@@ -28,11 +28,11 @@ Ultrasonic sonar(SERVO1, SERVO2);
 bool obstacle = false;
 
 void pollSonarDistance(void *pvParameters) {
-	unsigned long previousMillis = 0;
+	unsigned long previousMillis = 0, currentMillis;
 	int readings[SONAR_ITERATIONS], sonar_index = 0, total = 0, average;
 
 	for (;;) {
-		unsigned long currentMillis = millis();
+		currentMillis = millis();
 
 		if (currentMillis - previousMillis >= SONAR_PING_INTERVAL) {
 			previousMillis = currentMillis;
