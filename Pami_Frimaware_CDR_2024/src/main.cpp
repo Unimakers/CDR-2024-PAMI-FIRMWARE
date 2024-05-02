@@ -24,7 +24,7 @@ MergeSteppers RobotSteppers(stepperLeft, stepperRight, EN_DRIVER1, EN_DRIVER2);
 //Servo servoLeft, servoRight;
 
 // Capteur ultrason
-Ultrasonic sonar(SERVO1, SERVO2);
+Ultrasonic sonar(TRIGGER, ECHO);
 bool obstacle = false;
 
 void pollSonarDistance(void *pvParameters) {
