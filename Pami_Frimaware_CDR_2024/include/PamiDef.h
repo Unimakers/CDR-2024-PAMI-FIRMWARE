@@ -8,7 +8,9 @@
 
 // Pins pour servos
 #define SERVO1 4
+#define SERVO1_SPEED 70.0
 #define SERVO2 5
+#define SERVO2_SPEED 70.0
 
 // Pins pour ultrason
 #define TRIGGER 13
@@ -22,3 +24,6 @@
 
 // Pin pour tirette
 #define TIRETTE 3
+
+// Pin pour switch team
+#define SW_TEAM 2

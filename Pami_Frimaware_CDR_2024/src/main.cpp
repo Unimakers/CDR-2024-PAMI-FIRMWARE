@@ -2,8 +2,8 @@
 #include "PamiDef.h"
 #include "AccelStepper.h"
 #include "MergeSteppers.h"
-#include "ESP32Servo.h"
 #include "Ultrasonic.h"
+#include "ESP32Servo.h"
 
 #define DEBUG // à commenter en prod
 #ifdef DEBUG
@@ -20,12 +20,15 @@ AccelStepper stepperLeft(AccelStepper::DRIVER, STEP2, DIR2), stepperRight(AccelS
 // Wrapper des 2 steppers
 MergeSteppers RobotSteppers(stepperLeft, stepperRight, EN_DRIVER1, EN_DRIVER2);
 
-// Servos gauche et droite
-//Servo servoLeft, servoRight;
+// Servo pour jardinière
+Servo sg90;
 
 // Capteur ultrason
 Ultrasonic sonar(TRIGGER, ECHO);
 bool obstacle = false;
+
+// Team pour le match
+int team;
 
 void pollSonarDistance(void *pvParameters) {
 	unsigned long previousMillis = 0, currentMillis;
@@ -37,6 +40,8 @@ void pollSonarDistance(void *pvParameters) {
 		if (currentMillis - previousMillis >= SONAR_PING_INTERVAL) {
 			previousMillis = currentMillis;
 
+			noTone(BUZZER);
+
 			total -= readings[sonar_index];
 			readings[sonar_index] = sonar.read();
 			total += readings[sonar_index];
@@ -47,22 +52,19 @@ void pollSonarDistance(void *pvParameters) {
 
 			if (average <= 20) {
 				obstacle = true;
-
 				tone(BUZZER, 440);
-				delay(SONAR_PING_INTERVAL);
-				noTone(BUZZER);
 			} else {
 				obstacle = false;
 			}
 
-			DEBUG_PRINTLN(average);
+			//DEBUG_PRINTLN(average);
 		}
 	}
 }
 
 void strategy(int zone, int jardiniere) {
-	// zone 1 = bleu
-	// zone 2 = jaune
+	// zone = 1 = bleu
+	// zone = 2 = jaune
 	switch (zone) {
 		case 1:
 			switch (jardiniere) {
@@ -217,7 +219,7 @@ void strategy(int zone, int jardiniere) {
 	}
 }
 
-void waitingTirette() {
+void waitingTirette_readSwitch() {
 	while (digitalRead(TIRETTE));
 	tone(BUZZER, 261);
 	delay(200);
@@ -226,6 +228,22 @@ void waitingTirette() {
 	tone(BUZZER, 329);
 	delay(200);
 	noTone(BUZZER);
+
+	switch (digitalRead(SW_TEAM)) {
+		case 0:
+			team = 2;
+			DEBUG_PRINTLN("Team bleue");
+			break;
+
+		case 1:
+			team = 1;
+			DEBUG_PRINTLN("Team jaune");
+			break;
+
+		default:
+			DEBUG_PRINTLN("Erreur sélection équipe à l'aide du switch");
+			break;
+	}
 }
 
 void setup() {
@@ -233,31 +251,43 @@ void setup() {
     delay(250);
     DEBUG_PRINT("Liaison série OK");
 	pinMode(TIRETTE, INPUT_PULLUP);
+	pinMode(SW_TEAM, INPUT_PULLUP);
 	delay(250);
-	DEBUG_PRINT(" | Tirette OK");
-    RobotSteppers.set_max_acceleration(STEP_ACCEL);
+	DEBUG_PRINT(" | Tirette & SwitchTeam OK");
+	ESP32PWM::allocateTimer(3);
+	sg90.attach(SERVO2);
+	RobotSteppers.set_max_acceleration(STEP_ACCEL);
     RobotSteppers.set_speed(STEP_SPEED);
     RobotSteppers.enable();
     //RobotSteppers.disable();
     delay(250);
-    DEBUG_PRINT(" | Steppers OK");
+    DEBUG_PRINT(" | Servos & Steppers OK");
 	xTaskCreatePinnedToCore(pollSonarDistance, "sonarTask", 10000, NULL, 0, NULL, 0);
 	delay(250);
 	DEBUG_PRINT(" | Sonar Core2 OK");
 	pinMode(BUZZER, OUTPUT);
 	delay(250);
 	DEBUG_PRINTLN(" | Buzzer OK");
-	waitingTirette();
+	waitingTirette_readSwitch();
 }
 
 void loop() {
 	static bool loopTest = true;
 
-	//delay(90000); // début après 90s match
+	//delay(91000); // début après 91s match
 
 	if (loopTest) {
-		strategy(1, 2);
+		strategy(team, 2);
 
 		loopTest = false;
 	}
+
+	/*
+	sg90.write(0);
+	DEBUG_PRINTLN("0°");
+	delay(1000);
+	sg90.write(180);
+	DEBUG_PRINTLN("180°");
+	delay(1000);
+	*/
 }
