@@ -8,16 +8,13 @@
 
 // Pins pour servos
 #define SERVO1 4
-#define SERVO1_SPEED 70.0
 #define SERVO2 5
-#define SERVO2_SPEED 70.0
 
 // Pins pour ultrason
 #define TRIGGER 13
 #define ECHO 14
-#define SONAR_MAX_DISTANCE 200
 #define SONAR_PING_INTERVAL 33
-#define SONAR_ITERATIONS 4
+#define SONAR_ITERATIONS 5
 
 // Pin pour buzzer
 #define BUZZER 12

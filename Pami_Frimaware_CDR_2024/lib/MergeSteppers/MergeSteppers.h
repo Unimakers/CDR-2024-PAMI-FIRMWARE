@@ -4,7 +4,7 @@
 #define RAYON 47.5
 #define HALF_RAYON (RAYON / 2)
 #define STEP_PER_MM 14.8
-#define STEP_SPEED 10000.0
+#define STEP_SPEED 15000.0
 #define STEP_ACCEL (STEP_SPEED / 2)
 
 typedef struct {
@@ -21,7 +21,6 @@ class MergeSteppers {
     protected:
         StepperDistance leftover_distance;
         AccelStepper &left, &right;
-        StepperDistance distance_to_go();
 		Coords currentCoords;
         const int en1_pin;
         const int en2_pin;
@@ -46,4 +45,5 @@ class MergeSteppers {
         void enable();
         void disable();
         void run();
+		StepperDistance distance_to_go();
 };
