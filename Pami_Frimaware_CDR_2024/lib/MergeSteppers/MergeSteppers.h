@@ -4,7 +4,7 @@
 #define RAYON 47.5
 #define HALF_RAYON (RAYON / 2)
 #define STEP_PER_MM 14.8
-#define STEP_SPEED 15000.0
+#define STEP_SPEED 10000.0
 #define STEP_ACCEL (STEP_SPEED / 2)
 
 typedef struct {
