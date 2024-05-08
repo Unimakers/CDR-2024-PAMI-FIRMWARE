@@ -13,7 +13,6 @@
 // Pins pour ultrason
 #define TRIGGER 13
 #define ECHO 14
-#define SONAR_PING_INTERVAL 33
 #define SONAR_ITERATIONS 5
 
 // Pin pour buzzer
@@ -24,3 +23,7 @@
 
 // Pin pour switch team
 #define SW_TEAM 2
+
+// Intervalles
+#define SONAR_PING_INTERVAL 33
+#define TIMER_INTERVAL 9000000
