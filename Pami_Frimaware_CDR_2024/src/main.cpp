@@ -6,7 +6,7 @@
 #include "ESP32Servo.h"
 #include "esp32-hal-timer.h"
 
-#define DEBUG // à commenter en prod
+//#define DEBUG // à commenter en prod
 #ifdef DEBUG
 	#define DEBUG_PRINTLN(x) Serial.println(x)
 	#define DEBUG_PRINT(x) Serial.print(x)
@@ -26,23 +26,29 @@ Servo sg90;
 
 // Capteur ultrason
 Ultrasonic sonar(TRIGGER, ECHO);
-bool obstacle = false, disableBuzzer = false;
+bool obstacle = false, disableSonar = false;
 
 // Team définie par le switch au départ
 int team;
 
 // Timer match PAMI
-hw_timer_t *timerMatch = NULL;
+hw_timer_t * timerMatch = NULL;
+
+void IRAM_ATTR timerExpired() {
+	RobotSteppers.disable();
+	sg90.detach();
+	disableSonar = true;
+}
 
 void pollSonarDistance(void *pvParameters) {
 	unsigned long previousMillis = 0;
 	int readings[SONAR_ITERATIONS], sonar_index = 0, total = 0, average;
 
 	for (;;) {
+		noTone(BUZZER);
+
 		if (millis() - previousMillis >= SONAR_PING_INTERVAL) {
 			previousMillis = millis();
-
-			noTone(BUZZER);
 
 			total -= readings[sonar_index];
 			readings[sonar_index] = sonar.read();
@@ -52,10 +58,9 @@ void pollSonarDistance(void *pvParameters) {
 
 			average = total / SONAR_ITERATIONS;
 
-			if (average <= 30) {
+			if (average <= 31) {
 				obstacle = true;
-
-				if (!disableBuzzer) tone(BUZZER, 440);
+				tone(BUZZER, 444);
 			} else {
 				obstacle = false;
 			}
@@ -66,15 +71,19 @@ void pollSonarDistance(void *pvParameters) {
 }
 
 void sweepJardiniere() {
-	for (int i = 0; i <= 90; i++) {
+	for (int i = 1; i < 91; i++) {
 		sg90.write(i);
-		delay(4);
+		delay(5);
 	}
 
+	/*
 	for (int i = 89; i > 0; i--) {
 		sg90.write(i);
-		delay(4);
+		delay(5);
 	}
+	*/
+
+	DEBUG_PRINTLN("Jardinière balayée");
 }
 
 void strategy(int zone, int jardiniere) {
@@ -84,7 +93,7 @@ void strategy(int zone, int jardiniere) {
 		case 1:
 			switch (jardiniere) {
 				case 1:
-					RobotSteppers.move_line(200 * STEP_PER_MM);
+					RobotSteppers.move_line(25 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
@@ -96,15 +105,54 @@ void strategy(int zone, int jardiniere) {
 						RobotSteppers.run();
 					}
 
-					RobotSteppers.move_line(900 * STEP_PER_MM);
+					RobotSteppers.move_line(400 * STEP_PER_MM);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					disableSonar = true;
+
+					RobotSteppers.turn(-90);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.move_line(75 * STEP_PER_MM);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					sweepJardiniere();
+
+					break;
+				case 2:
+					RobotSteppers.move_line(225 * STEP_PER_MM);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.turn(-90);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.move_line(950 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
 						if (!obstacle) {
 							RobotSteppers.run();
+						} else if (timerReadMicros(timerMatch) >= 95000000) {
+						//} else if (timerReadMicros(timerMatch) >= 9500000) { // SEULEMENT POUR TEST
+							obstacle = false;
 						}
 					}
 
-					disableBuzzer = true;
+					disableSonar = true;
 
 					RobotSteppers.turn(45);
 
@@ -115,48 +163,20 @@ void strategy(int zone, int jardiniere) {
 					sweepJardiniere();
 
 					break;
-				case 2:
-					RobotSteppers.move_line(600 * STEP_PER_MM);
-
-					while (!RobotSteppers.target_reached()) {
-						if (!obstacle) {
-							RobotSteppers.run();
-						}
-					}
-
-					RobotSteppers.turn(-90);
-
-					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
-					}
-
-					RobotSteppers.move_line(1250 * STEP_PER_MM);
-
-					while (!RobotSteppers.target_reached()) {
-						if (!obstacle) {
-							RobotSteppers.run();
-						}
-					}
-
-					disableBuzzer = true;
-
-					sweepJardiniere();
-
-					break;
 				case 3:
-					RobotSteppers.move_line(50 * STEP_PER_MM);
+					RobotSteppers.move_line(650 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
 					}
 
-					RobotSteppers.turn(-35);
+					RobotSteppers.turn(-47);
 
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
 					}
 
-					RobotSteppers.move_line(2000 * STEP_PER_MM);
+					RobotSteppers.move_line(1475 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
 						if (!obstacle) {
@@ -164,7 +184,9 @@ void strategy(int zone, int jardiniere) {
 						}
 					}
 
-					disableBuzzer = true;
+					disableSonar = true;
+
+					sg90.write(45);
 
 					break;
 				default:
@@ -177,7 +199,7 @@ void strategy(int zone, int jardiniere) {
 		case 2:
 			switch (jardiniere) {
 				case 1:
-					RobotSteppers.move_line(200 * STEP_PER_MM);
+					RobotSteppers.move_line(25 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
@@ -189,15 +211,54 @@ void strategy(int zone, int jardiniere) {
 						RobotSteppers.run();
 					}
 
-					RobotSteppers.move_line(900 * STEP_PER_MM);
+					RobotSteppers.move_line(400 * STEP_PER_MM);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					disableSonar = true;
+
+					RobotSteppers.turn(90);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.move_line(75 * STEP_PER_MM);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					sweepJardiniere();
+
+					break;
+				case 2:
+					RobotSteppers.move_line(225 * STEP_PER_MM);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.turn(90);
+
+					while (!RobotSteppers.target_reached()) {
+						RobotSteppers.run();
+					}
+
+					RobotSteppers.move_line(950 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
 						if (!obstacle) {
 							RobotSteppers.run();
+						} else if (timerReadMicros(timerMatch) >= 95000000) {
+						//} else if (timerReadMicros(timerMatch) >= 9500000) { // SEULEMENT POUR TEST
+							obstacle = false;
 						}
 					}
 
-					disableBuzzer = true;
+					disableSonar = true;
 
 					RobotSteppers.turn(-45);
 
@@ -208,48 +269,20 @@ void strategy(int zone, int jardiniere) {
 					sweepJardiniere();
 
 					break;
-				case 2:
-					RobotSteppers.move_line(600 * STEP_PER_MM);
-
-					while (!RobotSteppers.target_reached()) {
-						if (!obstacle) {
-							RobotSteppers.run();
-						}
-					}
-
-					RobotSteppers.turn(90);
-
-					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
-					}
-
-					RobotSteppers.move_line(1250 * STEP_PER_MM);
-
-					while (!RobotSteppers.target_reached()) {
-						if (!obstacle) {
-							RobotSteppers.run();
-						}
-					}
-
-					disableBuzzer = true;
-
-					sweepJardiniere();
-
-					break;
 				case 3:
-					RobotSteppers.move_line(50 * STEP_PER_MM);
+					RobotSteppers.move_line(650 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
 					}
 
-					RobotSteppers.turn(35);
+					RobotSteppers.turn(47);
 
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
 					}
 
-					RobotSteppers.move_line(2000 * STEP_PER_MM);
+					RobotSteppers.move_line(1475 * STEP_PER_MM);
 
 					while (!RobotSteppers.target_reached()) {
 						if (!obstacle) {
@@ -257,7 +290,9 @@ void strategy(int zone, int jardiniere) {
 						}
 					}
 
-					disableBuzzer = true;
+					disableSonar = true;
+
+					sg90.write(45);
 
 					break;
 				default:
@@ -301,20 +336,8 @@ void waitingTirette_readSwitch() {
 	}
 }
 
-void IRAM_ATTR onTimer() {
-	disableBuzzer = true;
-	RobotSteppers.move_line(0);
-
-	while (!RobotSteppers.target_reached()) {
-		RobotSteppers.run();
-	}
-
-	RobotSteppers.disable();
-	DEBUG_PRINTLN("Temps écoulé");
-}
-
 void setup() {
-    Serial.begin(115200);
+    //Serial.begin(115200);
     delay(250);
     DEBUG_PRINT("Liaison série OK");
 	pinMode(TIRETTE, INPUT_PULLUP);
@@ -337,15 +360,18 @@ void setup() {
 	delay(250);
 	DEBUG_PRINT(" | Buzzer OK");
 	sg90.write(0);
-	timerMatch = timerBegin(0, 80, true);
-	timerAttachInterrupt(timerMatch, &onTimer, true);
-	timerAlarmWrite(timerMatch, TIMER_INTERVAL, false);
 	DEBUG_PRINTLN(" | Timer match OK");
 	waitingTirette_readSwitch();
 
-	delay(92000); // début après 92s de match
-	strategy(team, 2);
+	timerMatch = timerBegin(2, 80, true);
+	timerAttachInterrupt(timerMatch, &timerExpired, true);
+	timerAlarmWrite(timerMatch, 98500000, false);
+	//timerAlarmWrite(timerMatch, 13000000, false); // SEULEMENT POUR TEST
 	timerAlarmEnable(timerMatch);
+
+	delay(90500);
+	//delay(5000); // SEULEMENT POUR TEST
+	strategy(team, 1);
 }
 
 void loop() {
