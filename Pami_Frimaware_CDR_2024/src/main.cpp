@@ -371,7 +371,7 @@ void setup() {
 
 	delay(90500);
 	//delay(5000); // SEULEMENT POUR TEST
-	strategy(team, 1);
+	strategy(team, 3);
 }
 
 void loop() {
