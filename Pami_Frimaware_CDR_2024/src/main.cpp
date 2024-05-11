@@ -181,6 +181,8 @@ void strategy(int zone, int jardiniere) {
 					while (!RobotSteppers.target_reached()) {
 						if (!obstacle) {
 							RobotSteppers.run();
+						} else if (timerReadMicros(timerMatch) >= 95000000) {
+							break;
 						}
 					}
 
@@ -287,6 +289,8 @@ void strategy(int zone, int jardiniere) {
 					while (!RobotSteppers.target_reached()) {
 						if (!obstacle) {
 							RobotSteppers.run();
+						} else if (timerReadMicros(timerMatch) >= 95000000) {
+							break;
 						}
 					}
 
