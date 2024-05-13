@@ -50,7 +50,7 @@ void pollWiimote(void *pvParameters) {
 					RobotSteppers.run();
 					break;
 				case BUTTON_A:
-					tone(BUZZER, 666);
+					tone(BUZZER, 666, 1000UL);
 					break;
 				case BUTTON_B:
 					sweepJardiniere();
