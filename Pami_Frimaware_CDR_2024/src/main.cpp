@@ -23,58 +23,59 @@ MergeSteppers RobotSteppers(stepperLeft, stepperRight, EN_DRIVER1, EN_DRIVER2);
 // Servo pour jardinière
 Servo sg90;
 
-// Objet wiimote
+// Objets wiimote
 ESP32Wiimote wiimote;
+ButtonState button;
 
-void pollWiimote(void *pvParameters) {
-	unsigned long previousMillis = 0;
-
-	for (;;) {
-		delay(10); // la wiimote fonctionne à 100Hz
+void pollWiimote() {
+	if (wiimote.available() > 0) {
 		wiimote.task();
+		button = wiimote.getButtonState();
+		delay(10); // la wiimote fonctionne à 100Hz soit 10ms
+	}
+}
 
-		if (wiimote.available()) {
-			ButtonState button = wiimote.getButtonState();
-
-			switch (button) {
-				case BUTTON_ONE:
-					RobotSteppers.set_speed(STEP_SPEED * sqrtf(2));
-					RobotSteppers.set_max_acceleration(STEP_ACCEL * sqrtf(2));
-					RobotSteppers.stop();
-					break;
-				case BUTTON_TWO:
-					// --- pas sûr, peut-être à retirer
-					RobotSteppers.set_speed(STEP_SPEED);
-					RobotSteppers.set_max_acceleration(STEP_ACCEL);
-					// ---
-					RobotSteppers.run();
-					break;
-				case BUTTON_A:
-					// Fait fonctionner le buzzer tant que la touche est enfoncée
-					while (wiimote.getButtonState() == BUTTON_A) {
-						tone(BUZZER, 440);
-						wiimote.task();
-					}
-
-					noTone(BUZZER);
-					break;
-				case BUTTON_B:
-					sweepJardiniere();
-					break;
-				case BUTTON_UP:
-					stepperLeft.setMaxSpeed(STEP_SPEED / 2);
-					stepperRight.setMaxSpeed(STEP_SPEED);
-					break;
-				case BUTTON_DOWN:
-					stepperLeft.setMaxSpeed(STEP_SPEED);
-					stepperRight.setMaxSpeed(STEP_SPEED / 2);
-					break;
-				default:
-					RobotSteppers.set_speed(STEP_SPEED);
-					RobotSteppers.set_max_acceleration(STEP_ACCEL);
-					noTone(BUZZER);
-					break;
-			}
+void handleWiimote(void *pvParameters) {
+	for (;;) {
+		switch (button) {
+			case BUTTON_ONE:
+				RobotSteppers.set_speed(STEP_SPEED * sqrtf(2));
+				RobotSteppers.set_max_acceleration(STEP_ACCEL * sqrtf(2));
+				RobotSteppers.stop();
+				DEBUG_PRINTLN("input: Freiner");
+				break;
+			case BUTTON_TWO:
+				// --- pas sûr, peut-être à retirer
+				RobotSteppers.set_speed(STEP_SPEED);
+				RobotSteppers.set_max_acceleration(STEP_ACCEL);
+				// ---
+				RobotSteppers.run();
+				DEBUG_PRINTLN("input: Accélérer");
+				break;
+			case BUTTON_A:
+				// Fait fonctionner le buzzer tant que la touche est enfoncée
+				tone(BUZZER, 440);
+				DEBUG_PRINTLN("input: Klaxon");
+				while (button == BUTTON_A);
+				noTone(BUZZER);
+				break;
+			case BUTTON_B:
+				sweepJardiniere();
+				DEBUG_PRINTLN("input: Servo-moteur balaye");
+				break;
+			case BUTTON_UP:
+				stepperLeft.setMaxSpeed(STEP_SPEED / 2);
+				stepperRight.setMaxSpeed(STEP_SPEED);
+				DEBUG_PRINTLN("input: Tourner à gauche");
+				break;
+			case BUTTON_DOWN:
+				stepperLeft.setMaxSpeed(STEP_SPEED);
+				stepperRight.setMaxSpeed(STEP_SPEED / 2);
+				DEBUG_PRINTLN("input: Tourner à droite");
+				break;
+			default:
+				DEBUG_PRINTLN("input: ?");
+				break;
 		}
 	}
 }
@@ -110,7 +111,7 @@ void setup() {
     //RobotSteppers.disable();
     delay(250);
     DEBUG_PRINT(" | Servos & Steppers OK");
-	xTaskCreatePinnedToCore(pollWiimote, "wiimoteTask", 10000, NULL, 0, NULL, 0);
+	xTaskCreatePinnedToCore(handleWiimote, "wiimoteTask", 10000, NULL, 0, NULL, 0);
 	delay(250);
 	DEBUG_PRINT(" | Wiimote Core2 OK");
 	pinMode(BUZZER, OUTPUT);
@@ -120,5 +121,5 @@ void setup() {
 }
 
 void loop() {
-	// ça glande par ici
+	pollWiimote();
 }
