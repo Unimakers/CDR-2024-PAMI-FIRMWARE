@@ -33,7 +33,7 @@ void pollWiimote(void *pvParameters) {
 		delay(10); // la wiimote fonctionne à 100Hz
 		wiimote.task();
 
-		if (wiimote.available() > 0) {
+		if (wiimote.available()) {
 			ButtonState button = wiimote.getButtonState();
 
 			switch (button) {
@@ -50,7 +50,13 @@ void pollWiimote(void *pvParameters) {
 					RobotSteppers.run();
 					break;
 				case BUTTON_A:
-					tone(BUZZER, 666, 1000UL);
+					// Fait fonctionner le buzzer tant que la touche est enfoncée
+					while (wiimote.getButtonState() == BUTTON_A) {
+						tone(BUZZER, 440);
+						wiimote.task();
+					}
+
+					noTone(BUZZER);
 					break;
 				case BUTTON_B:
 					sweepJardiniere();
