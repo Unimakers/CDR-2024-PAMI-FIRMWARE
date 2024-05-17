@@ -26,4 +26,3 @@
 
 // Intervalles
 #define SONAR_PING_INTERVAL 33
-#define TIMER_INTERVAL 9000000
