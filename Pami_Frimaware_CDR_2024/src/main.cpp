@@ -86,6 +86,45 @@ void sweepJardiniere() {
 	DEBUG_PRINTLN("Jardinière balayée");
 }
 
+void makeItRun() {
+	long tempDistance_L = 0, tempDistance_R = 0;
+
+	while (stepperLeft.isRunning() || stepperRight.isRunning()) {
+		RobotSteppers.run();
+
+		if (obstacle) {
+			DEBUG_PRINTLN("Obstacle en vue");
+
+			tempDistance_L = stepperLeft.distanceToGo();
+			tempDistance_R = stepperRight.distanceToGo();
+
+			RobotSteppers.set_max_acceleration(STEP_ACCEL * 2);
+			RobotSteppers.set_speed(STEP_SPEED * 2);
+
+			RobotSteppers.move_line(0);
+
+			tempDistance_L += stepperLeft.distanceToGo();
+			tempDistance_R += stepperRight.distanceToGo();
+
+			RobotSteppers.run();
+
+			while (stepperLeft.isRunning() || stepperRight.isRunning()) {
+				RobotSteppers.run();
+			}
+
+			while (obstacle) {
+				DEBUG_PRINTLN("Obstacle toujours en vue");
+			}
+
+			RobotSteppers.set_max_acceleration(STEP_ACCEL);
+			RobotSteppers.set_speed(STEP_SPEED);
+
+			stepperLeft.move(tempDistance_L);
+			stepperRight.move(tempDistance_R);
+		}
+	}
+}
+
 void strategy(int zone, int jardiniere) {
 	// zone = 1 = bleu
 	// zone = 2 = jaune
@@ -95,9 +134,15 @@ void strategy(int zone, int jardiniere) {
 				case 1:
 					RobotSteppers.move_line(25 * STEP_PER_MM);
 
+					/*
 					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
+						if (!obstacle) {
+							RobotSteppers.run();
+						}
 					}
+					*/
+
+					makeItRun();
 
 					RobotSteppers.turn(-90);
 
@@ -107,9 +152,13 @@ void strategy(int zone, int jardiniere) {
 
 					RobotSteppers.move_line(400 * STEP_PER_MM);
 
+					/*
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
 					}
+					*/
+
+					makeItRun();
 
 					disableSonar = true;
 
@@ -131,9 +180,13 @@ void strategy(int zone, int jardiniere) {
 				case 2:
 					RobotSteppers.move_line(225 * STEP_PER_MM);
 
+					/*
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
 					}
+					*/
+
+					makeItRun();
 
 					RobotSteppers.turn(-90);
 
@@ -143,6 +196,7 @@ void strategy(int zone, int jardiniere) {
 
 					RobotSteppers.move_line(950 * STEP_PER_MM);
 
+					/*
 					while (!RobotSteppers.target_reached()) {
 						if (!obstacle) {
 							RobotSteppers.run();
@@ -151,6 +205,9 @@ void strategy(int zone, int jardiniere) {
 							obstacle = false;
 						}
 					}
+					*/
+
+					makeItRun();
 
 					disableSonar = true;
 
@@ -166,9 +223,15 @@ void strategy(int zone, int jardiniere) {
 				case 3:
 					RobotSteppers.move_line(650 * STEP_PER_MM);
 
+					/*
 					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
+						if (!obstacle) {
+							RobotSteppers.run();
+						}
 					}
+					*/
+
+					makeItRun();
 
 					RobotSteppers.turn(-47);
 
@@ -178,6 +241,7 @@ void strategy(int zone, int jardiniere) {
 
 					RobotSteppers.move_line(1475 * STEP_PER_MM);
 
+					/*
 					while (!RobotSteppers.target_reached()) {
 						if (!obstacle) {
 							RobotSteppers.run();
@@ -185,6 +249,9 @@ void strategy(int zone, int jardiniere) {
 							break;
 						}
 					}
+					*/
+
+					makeItRun();
 
 					disableSonar = true;
 
@@ -203,9 +270,15 @@ void strategy(int zone, int jardiniere) {
 				case 1:
 					RobotSteppers.move_line(25 * STEP_PER_MM);
 
+					/*
 					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
+						if (!obstacle) {
+							RobotSteppers.run();
+						}
 					}
+					*/
+
+					makeItRun();
 
 					RobotSteppers.turn(90);
 
@@ -215,9 +288,13 @@ void strategy(int zone, int jardiniere) {
 
 					RobotSteppers.move_line(400 * STEP_PER_MM);
 
+					/*
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
 					}
+					*/
+
+					makeItRun();
 
 					disableSonar = true;
 
@@ -239,9 +316,13 @@ void strategy(int zone, int jardiniere) {
 				case 2:
 					RobotSteppers.move_line(225 * STEP_PER_MM);
 
+					/*
 					while (!RobotSteppers.target_reached()) {
 						RobotSteppers.run();
 					}
+					*/
+
+					makeItRun();
 
 					RobotSteppers.turn(90);
 
@@ -251,6 +332,7 @@ void strategy(int zone, int jardiniere) {
 
 					RobotSteppers.move_line(950 * STEP_PER_MM);
 
+					/*
 					while (!RobotSteppers.target_reached()) {
 						if (!obstacle) {
 							RobotSteppers.run();
@@ -259,6 +341,9 @@ void strategy(int zone, int jardiniere) {
 							obstacle = false;
 						}
 					}
+					*/
+
+					makeItRun();
 
 					disableSonar = true;
 
@@ -274,9 +359,15 @@ void strategy(int zone, int jardiniere) {
 				case 3:
 					RobotSteppers.move_line(650 * STEP_PER_MM);
 
+					/*
 					while (!RobotSteppers.target_reached()) {
-						RobotSteppers.run();
+						if (!obstacle) {
+							RobotSteppers.run();
+						}
 					}
+					*/
+
+					makeItRun();
 
 					RobotSteppers.turn(47);
 
@@ -286,6 +377,7 @@ void strategy(int zone, int jardiniere) {
 
 					RobotSteppers.move_line(1475 * STEP_PER_MM);
 
+					/*
 					while (!RobotSteppers.target_reached()) {
 						if (!obstacle) {
 							RobotSteppers.run();
@@ -293,6 +385,9 @@ void strategy(int zone, int jardiniere) {
 							break;
 						}
 					}
+					*/
+
+					makeItRun();
 
 					disableSonar = true;
 
